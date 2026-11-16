@@ -1,6 +1,6 @@
 # Desplegar el prototipo en AWS EC2
 
-Esta guía explica cómo instalar el proyecto en EC2 con Docker Compose. Ya existe un despliegue de demostración en AWS Academy, documentado en [la verificación de EC2](verificacion-aws.md). Para repetirlo se necesita acceso autorizado a una cuenta AWS y un nombre DNS; puede usarse un dominio propio o uno temporal para una demo. AWS puede generar cargos.
+Esta guía explica cómo instalar el proyecto en EC2 con Docker Compose. Ya existe un despliegue de demostración en AWS Academy, documentado en [la verificación de EC2](verificacion.md#verificacion-aws). Para repetirlo se necesita acceso autorizado a una cuenta AWS y un nombre DNS; puede usarse un dominio propio o uno temporal para una demo. AWS puede generar cargos.
 
 ## Arquitectura propuesta
 

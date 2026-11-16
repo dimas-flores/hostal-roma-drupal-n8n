@@ -102,11 +102,13 @@ Las credenciales, archivos `.env`, bases de datos y dependencias instaladas se e
 
 ## Documentación complementaria
 
-- [Arquitectura del sistema](docs/arquitectura.md).
-- [API e integración](docs/api.md).
-- [Flujos de n8n](docs/n8n.md).
-- [Tienda y pedidos](docs/tienda-commerce.md).
-- [Recepción y ocupación](docs/recepcion.md).
+- [Instalación](docs/instalacion.md).
+- [Manual de uso](docs/manual-de-usuario.md).
+- [Arquitectura](docs/arquitectura.md).
+- [API](docs/api.md) e [integración n8n](docs/n8n.md).
 - [Configuración de IA](docs/fase-6-ia-opcional.md).
+- [SUNAT beta](docs/sunat-beta.md).
+- [Despliegue en AWS](docs/despliegue-aws-ec2.md).
+- [Verificaciones](docs/verificacion.md).
+- [Referencias](docs/referencias.md) y [recursos visuales](docs/recursos-visuales.md).
 - [Guion de presentación](docs/guion-demostracion.md).
-- [Procedencia de recursos visuales](docs/recursos-visuales.md).

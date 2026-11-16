@@ -96,7 +96,7 @@ deno run --cached-only --allow-all tests/sunat-beta-browser.mjs
 
 Estas pruebas no envían documentos a SUNAT. Utilizan transportes simulados para las reglas y solo preparan/descargan documentos en navegador. La prueba manual `tests/sunat-beta-live.php` está separada de `verify-all.sh` y exige `ROMA_ALLOW_BETA_LIVE=1`; úsala solo para una verificación puntual, nunca para carga. `ROMA_BETA_TEST_TYPE` permite seleccionar `01` o `03`.
 
-Se aprobaron 44 comprobaciones de reglas, 17 de navegador y las regresiones locales de cuentas (40) y recepción (29). Consulta [las limitaciones y detalles de la verificación](verificacion-sunat-beta.md).
+Se aprobaron 44 comprobaciones de reglas, 17 de navegador y las regresiones locales de cuentas (40) y recepción (29). Consulta [las limitaciones y detalles de la verificación](verificacion.md#verificacion-sunat-beta).
 
 ## Errores frecuentes
 
