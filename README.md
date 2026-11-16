@@ -1,105 +1,117 @@
-# Golden Roma — Prototipo académico Drupal + n8n
+# Sistema Web de Reservas y Atención Automatizada para Hostal ROMA
 
-Acceso actual en AWS: [Hoteles](https://hoteles.3-91-159-139.sslip.io).
+**Universidad Nacional de Juliaca**  
+Facultad de Ciencias de Ingenierías  
+Escuela Profesional de Ingeniería de Software y Sistemas
 
-Sistema Web de Reservas y Atención Automatizada — Juliaca, Puno, Perú.
+**Integrantes:** Dimas Mijael Flores Yerba y Jords Williams Calla Mamani.
 
-**Prototipo académico no oficial. Habitaciones, disponibilidad y tarifas de demostración**
+## Presentación
 
-Proyecto independiente, no autorizado ni afiliado oficialmente al establecimiento. Las imágenes, habitaciones y tarifas son ilustrativas. La dirección de referencia fue identificada por el usuario; no se importan datos de clientes del negocio.
+El proyecto desarrolla una plataforma de reservas hoteleras y comercio electrónico mediante Drupal, integrada con un asistente de consultas y automatizaciones en n8n. Se toma como referencia un establecimiento de Juliaca, Puno, Perú, y se permite configurar el contenido para otros alojamientos.
 
-## Estado de la entrega
+El trabajo responde a la consigna de implementar una tienda en línea, integrarla con un chat mediante n8n y ejecutar sus servicios con Docker o Docker Compose.
 
-La aplicación reúne el sistema hotelero y una tienda de estadías con **Drupal Commerce 3.3.14**: catálogo, carrito de varias habitaciones, checkout, pedidos, pasarela local de prueba y confirmación administrativa de reservas. El chatbot oficial `@n8n/chat` consulta Drupal mediante n8n. Tres workflows exportables gestionan consultas, solicitudes y automatizaciones con captura SMTP local.
+## Objetivo
 
-La opción de la consigna implementada es **Drupal/PHP + chat n8n + Docker Compose**. El pago académico permite aprobar, rechazar y cancelar sin dinero real. Una aprobación no confirma habitaciones: cada solicitud requiere decisión administrativa. OpenAI es opcional y permanece desactivado; no hay integración bancaria externa. Ver [tienda y alcance](docs/tienda-commerce.md), [guía para usarla](docs/guia-tienda.md) y [resultados de la entrega](docs/verificacion-tienda.md).
+Integrar la consulta de habitaciones, el registro de solicitudes de reserva y la atención automatizada en un sistema administrable, con información almacenada en una base de datos común.
 
-También se desplegó una [demo HTTPS en AWS Academy](https://roma-demo.18-208-158-190.sslip.io/), con el editor n8n privado por túnel SSH. Se aprobaron 48 comprobaciones del servidor y 38 de navegador sobre EC2. El enlace depende de la instancia y de su IP durante el laboratorio; consulta la [verificación del despliegue](docs/verificacion-aws.md).
+## Tecnologías
 
-La primera ampliación del sistema incorpora **recepción con calendario de 7/14/31 días, check-in, check-out, limpieza, mantenimientos y auditoría**. Las reglas se comparten con la tienda, la API y el chatbot. Consulta la [guía de recepción](docs/recepcion.md) y la [verificación de esta mejora](docs/verificacion-recepcion.md).
+| Componente | Tecnología |
+| --- | --- |
+| Gestión de contenido y backend | Drupal 11, PHP 8.4 |
+| Comercio electrónico | Drupal Commerce 3 |
+| Base de datos | MariaDB 11.4 |
+| Interfaz | Twig, HTML, CSS y JavaScript |
+| Automatización y chat | n8n y widget @n8n/chat |
+| Interpretación de consultas | Gemini, de configuración opcional |
+| Entorno de ejecución | Docker y Docker Compose |
+| Control de versiones | Git y GitHub |
 
-La segunda ampliación añade **cuentas de demostración con cargos, descuentos, adelantos, devoluciones, saldos y contrapartidas auditadas**, más constancias internas y avisos n8n hacia Mailpit. No registra cobros bancarios ni emite CPE SUNAT. Véase la [guía de cuentas](docs/cuentas-y-saldos.md).
+Las dependencias PHP se registran en `drupal/composer.lock`. Los servicios y sus imágenes se definen en `compose.yaml`.
 
-La fase **SUNAT beta** ya está implementada y verificada localmente: factura y boleta con XML firmado y CDR código 0, usando datos genéricos y firma académica. Sigue pendiente su publicación en EC2 hasta recuperar el acceso a la instancia. No tiene validez tributaria ni habilita producción. Ver [guía SUNAT beta](docs/sunat-beta.md), [verificación](docs/verificacion-sunat-beta.md) y [ejemplos XML/CDR/PDF](docs/ejemplos-sunat-beta/README.md).
+## Funcionalidades
 
-## Arranque y comprobación
+- Catálogo de habitaciones, capacidad, servicios y tarifas en soles peruanos.
+- Consulta de disponibilidad por fechas y número de huéspedes.
+- Solicitudes de reserva con seguimiento privado mediante código y clave.
+- Tienda de estadías, carrito, pedidos y pago simulado.
+- Panel administrativo para gestionar inventario, tarifas y reservas.
+- Recepción, calendario de ocupación, entradas, salidas y limpieza.
+- Registro de cargos, saldos y movimientos de prueba.
+- Chat conectado a Drupal mediante n8n, con interpretación opcional de preguntas mediante Gemini.
+- Configuración del contenido, fotografías, ubicación y contacto del alojamiento.
+
+El sistema valida las fechas y la capacidad de cada habitación. Las reservas confirmadas no pueden superponerse: el ingreso es inclusivo y la salida exclusiva. Una solicitud pendiente no constituye una confirmación.
+
+## Arquitectura
+
+El navegador accede a Drupal, que administra la interfaz, las operaciones y la persistencia en MariaDB. El chat utiliza una API de Drupal para comunicarse con n8n. Los flujos consultan el catálogo y la disponibilidad antes de responder. Gemini puede interpretar preguntas, mientras que Drupal mantiene el control de los datos comerciales.
+
+Los servicios se ejecutan en contenedores. Los avisos por correo se capturan en Mailpit para su revisión local.
+
+## Instalación local
+
+Se requiere Git, Python 3 y Docker con el complemento Docker Compose. El motor de Docker debe estar en ejecución.
 
 ```bash
+git clone https://github.com/dimas-flores/hostal-roma-drupal-n8n.git
+cd hostal-roma-drupal-n8n
 python3 scripts/init-env.py
 sh scripts/start.sh
-sh scripts/verify-all.sh
 ```
 
-El generador conserva `.env` y añade únicamente variables faltantes; no cambia secretos existentes. El script de arranque exige un motor Docker accesible, construye e instala Drupal, importa credenciales y publica solo los tres flujos ROMA. Si el motor está detenido, un administrador del equipo puede iniciarlo con `sudo systemctl start docker`.
+El primer comando de preparación genera el archivo `.env` con la configuración y las credenciales locales. El script de arranque construye la imagen de Drupal, instala el sitio e importa los flujos principales de n8n.
 
-| Pantalla local | Función |
+| Servicio | Dirección local |
 | --- | --- |
-| `http://localhost:8080` | Página pública y chatbot |
-| `/tienda` | Catálogo comercial de estadías de demostración |
-| `/carrito` | Varias habitaciones, fechas, huéspedes e importes en PEN |
-| `/checkout` | Datos, revisión, pago de prueba y recibo privado |
-| `/disponibilidad` | Consulta de habitaciones libres de la demo |
-| `/reservar` | Solicitud pendiente |
-| `/mi-reserva` | Estado privado por código y clave |
-| `/pago-demo` | Simulación explícita, sin cobros |
-| `/contacto` | Mensajes de prueba |
-| `/admin/roma` | Panel hotelero Drupal |
-| `/admin/roma/pedidos` | Pedidos Commerce y reservas relacionadas |
-| `/admin/roma/recepcion` | Calendario, entradas, salidas y limpieza |
-| `/admin/roma/mantenimiento` | Bloqueos por fechas |
-| `/admin/roma/cuentas` | Cargos, adelantos, saldos y reportes simulados |
-| `http://localhost:5678` | Editor n8n; crear propietario si sigue el asistente inicial |
-| `http://localhost:8025` | Correos de prueba capturados en Mailpit |
+| Página web | http://localhost:8080 |
+| Inicio de sesión en Drupal | http://localhost:8080/user/login |
+| Panel hotelero | http://localhost:8080/admin/roma |
+| Editor n8n | http://localhost:5678 |
+| Correos de prueba | http://localhost:8025 |
 
-Usuario Drupal: `admin_demo`; contraseña en `.env`. El usuario de integración no se usa para entrar al panel. No compartas `.env`, claves de consulta o credenciales n8n.
+Las credenciales de Drupal se consultan en `.env`, en las variables `DRUPAL_ADMIN_USER` y `DRUPAL_ADMIN_PASSWORD`. El propietario de n8n se configura desde su asistente inicial. Las claves de proveedores de IA se guardan en las credenciales de n8n.
 
-## Documentación
+## Verificación
 
-- [Gestión hotelera y reglas de integridad](docs/fase-3-gestion-hotelera.md).
-- [Guía de recepción, calendario y mantenimiento](docs/recepcion.md).
-- [Cuentas, adelantos, saldos y avisos n8n](docs/cuentas-y-saldos.md) y [verificación financiera](docs/verificacion-finanzas.md).
-- [Facturación de prueba SUNAT beta](docs/sunat-beta.md).
-- [Tienda Drupal Commerce y checkout](docs/tienda-commerce.md).
-- [Guía rápida de la tienda](docs/guia-tienda.md).
-- [API y autorización](docs/api.md).
-- [Chat, workflows y automatizaciones n8n](docs/n8n.md).
-- [IA opcional](docs/fase-6-ia-opcional.md).
-- [Pagos: simulador y límite de la pasarela externa](docs/pagos.md).
-- [Despliegue en AWS EC2 con HTTPS y n8n privado](docs/despliegue-aws-ec2.md) y [resultado en AWS Academy](docs/verificacion-aws.md).
-- [Arquitectura](docs/arquitectura.md) y [guion de demostración](docs/guion-demostracion.md).
-- [Referencias web, GitHub y YouTube](docs/referencias-implementacion.md).
-- [Propuesta académica Word/PDF](docs/propuesta/README.md).
-
-## Guardar con Git
-
-Repositorio privado: [devmijaelflores-boop/hostal-roma-drupal-n8n](https://github.com/devmijaelflores-boop/hostal-roma-drupal-n8n). Se guardan código propio, Composer y su lock, configuración Docker, flujos sin secretos, recursos con licencias, pruebas y documentación. `.env`, dependencias, bases de datos y cachés se excluyen.
+Las comprobaciones básicas del entorno pueden ejecutarse con:
 
 ```bash
-git status --short
-git check-ignore .env drupal/vendor/autoload.php
-git add .gitignore .dockerignore .env.example compose.yaml README.md drupal docker n8n scripts tests docs
-git diff --cached --stat
-git diff --cached
-git commit -m "feat: prototipo hotelero Drupal y automatizaciones n8n"
+sh tests/smoke.sh
+python3 tests/api.py
+python3 tests/http_checks.py
 ```
 
-Revisa los cambios antes de confirmar. Para subir nuevos commits, ejecuta `git push origin main`. Conserva las credenciales exclusivamente en el entorno local.
+El directorio `tests/` contiene comprobaciones adicionales de reservas, permisos, concurrencia, comercio y automatización. Los resultados y requisitos de las pruebas se encuentran en `docs/`.
 
-## Versiones elegidas
+## Estructura del repositorio
 
-| Componente | Selección | Motivo |
-| --- | --- | --- |
-| Drupal | 11.4.12, bloqueado en `composer.lock` | Versión estable publicada el 6/11/2026. La restricción `~11.4.12` admite futuros parches 11.4 al actualizar expresamente Composer. |
-| Drupal Commerce | 3.3.14, bloqueado en Composer | Commerce 3.x es compatible con Drupal 11; aporta las entidades de producto, carrito, pedido, checkout y pago. |
-| PHP | 8.4, Apache, Debian Bookworm | Rama compatible con Drupal 11.4; imagen con GD, Intl, PDO MySQL, Mbstring, Zip, OPcache y BCMath. |
-| MariaDB | 11.4 LTS | Rama mantenida, superior al mínimo requerido por Drupal 11; aislamiento READ COMMITTED y UTF-8 completo. |
-| n8n | 2.47.3 | Versión identificada como estable en la documentación oficial consultada. |
-| Drush | 13.8.0, bloqueado en Composer | Instalación y administración por línea de comandos. |
-| Composer | 2 | Gestor oficial de dependencias para la plantilla Drupal. |
+```text
+drupal/          Proyecto Composer, módulos y tema propios
+docker/          Configuración de imágenes y servicios
+n8n/workflows/   Flujos exportables de automatización
+docs/            Documentación técnica y de uso
+scripts/         Preparación, instalación y administración
+tests/           Comprobaciones del sistema
+compose.yaml     Definición del entorno de contenedores
+.env.example     Variables de configuración de referencia
+```
 
-Consulta oficial realizada el 10/11/2026: [Drupal 11.4.12](https://www.drupal.org/project/drupal/releases/11.4.12), [compatibilidad PHP](https://www.drupal.org/docs/getting-started/system-requirements/php-requirements), [base de datos](https://www.drupal.org/docs/getting-started/system-requirements/database-server-requirements), [plantilla Composer](https://www.drupal.org/docs/develop/using-composer/starting-a-site-using-drupal-composer-project-templates), [mantenimiento MariaDB](https://mariadb.org/about/#maintenance-policy), [n8n con Docker](https://docs.n8n.io/hosting/installation/docker/).
+## Alcance académico
 
-Drupal y n8n tienen versiones exactas registradas. Las etiquetas PHP 8.4, MariaDB 11.4 y Composer 2 reciben parches dentro de su rama; una nueva construcción puede cambiar esos parches. Los digests utilizados están registrados en [imágenes verificadas](docs/imagenes-verificadas.txt). Revisar soporte y avisos antes de actualizar.
+El desarrollo es independiente y no constituye el sistema oficial del establecimiento de referencia. Los datos de prueba y recursos visuales permiten demostrar el funcionamiento sin utilizar información de sus clientes. Los pagos son simulados y no realizan cobros. La extensión SUNAT beta permite ensayar documentos electrónicos, sin validez tributaria.
 
+Las credenciales, archivos `.env`, bases de datos y dependencias instaladas se excluyen del repositorio. La procedencia de los recursos visuales se registra en la documentación.
 
-Mailpit: imagen `axllent/mailpit:v1.33.1`; widget `@n8n/chat` 1.46.2. Sus fuentes están registradas en la documentación.
+## Documentación complementaria
+
+- [Arquitectura del sistema](docs/arquitectura.md).
+- [API e integración](docs/api.md).
+- [Flujos de n8n](docs/n8n.md).
+- [Tienda y pedidos](docs/tienda-commerce.md).
+- [Recepción y ocupación](docs/recepcion.md).
+- [Configuración de IA](docs/fase-6-ia-opcional.md).
+- [Guion de presentación](docs/guion-demostracion.md).
+- [Procedencia de recursos visuales](docs/recursos-visuales.md).
