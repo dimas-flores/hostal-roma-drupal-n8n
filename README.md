@@ -1,8 +1,8 @@
 # Sistema Web de Reservas y Atención Automatizada para Hostal ROMA
 
-**Universidad Nacional de Juliaca**  
-Facultad de Ciencias de Ingenierías  
-Escuela Profesional de Ingeniería de Software y Sistemas
+**Universidad Nacional de Juliaca**
+
+Facultad de Ciencias de Ingenierías · Escuela Profesional de Ingeniería de Software y Sistemas
 
 **Integrantes:** Dimas Mijael Flores Yerba y Jords Williams Calla Mamani.
 
